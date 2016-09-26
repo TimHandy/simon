@@ -1,43 +1,193 @@
 * {
- // border: 1px red dashed;
+    /*border: 1px red dashed;*/
 }
+
+div h1 {
+    text-align: center;
+}
+
+.wrapper {
+    width: 50%;
+    margin: 0 auto;
+}
+
+.toy {
+
+}
+
+.simon-body {
+    background-color: gray;
+    width: 310px; height: 310px;
+    border-radius: 50%;
+    /*position: relative;*/
+}
+
+.components {
+    position: relative;
+    top: 5px;
+    left: 5px;
+}
+
+.quad {
+    height: 130px; width: 130px;
+
+}
+
+.top-left-quad {
+    border-radius: 100% 0 0 0;
+    background-color: #8FED28;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+
+}
+
+.top-right-quad {
+    border-radius: 0% 100% 0 0;
+    background-color: #FA023C;
+    position: absolute;
+    top: 10px;
+    left: 160px;
+}
+
+.bot-left-quad {
+    border-radius: 0 0 0 100%;
+    background-color: #FFFF00;
+    position: absolute;
+    top: 160px;
+    left: 10px;
+}
+
+.bot-right-quad {
+    border-radius: 0 0 100% 0;
+    background-color: #69D2E7;
+    position: absolute;
+    top: 160px;
+    left: 160px;
+}
+
+/* TODO: can i sort these quadrants so that they match the outer curve? */
+/* TODO: add another dark grey circle beind the center-console to  */
+
+.center-console-spacer-ring {
+    height: 170px; width: 170px;
+    background-color: gray;
+    border-radius: 100%;
+    position: absolute;
+    top: 65px;
+    left: 65px;
+}
+
+.center-console {
+    height: 150px; width: 150px;
+    background-color: silver;
+    border-radius: 100%;
+    position: absolute;
+    top: 75px;
+    left: 75px;
+}
+
+.toy-name {
+    position: absolute;
+    top: 0px;
+    left: 30px;
+}
+
+.count-display {
+    position: absolute;
+    top: 135px;
+    left: 90px;
+    height: 30px; width: 40px;
+    padding-left: 10px;
+    background-color: black;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 20px;
+    font-weight: bold;
+    color: #DC0007;
+
+}
+
+.start-reset-button {
+    height: 20px; width: 20px;
+    background-color: red;
+    border: 3px solid black;
+    border-radius: 100%;
+    position: absolute;
+    top: 140px;
+    left: 150px;
+}
+
+.strict-button {
+    height: 20px; width: 20px;
+    background-color: yellow;
+    border: 3px solid black;
+    border-radius: 100%;
+    position: absolute;
+    top: 140px;
+    left: 190px;
+}
+
+.strict-button-indicator {
+    height: 10px; width: 10px;
+    background-color: black;
+    border: 2px solid black;
+    border-radius: 100%;
+    position: absolute;
+    top: 128px;
+    left: 195px;
+}
+
+.on-off-button {
+    height: 20px; width: 30px;
+    background-color: red;
+    border: 2px solid black;
+    position: absolute;
+    top: 180px;
+    left: 135px;
+}
+
+.start-reset-button p {
+    font-size: 8px;
+    position: relative;
+    bottom: -20px;
+    left: -6px;
+}
+
+.strict-button p {
+    font-size: 8px;
+    position: relative;
+    bottom: -20px;
+    left: -6px;
+}
+
+.on-off-button p {
+    font-size: 8px;
+    position: relative;
+    bottom: -20px;
+    left: -2px;
+}
+
+/* TODO:  sort this css positioning of buttons and labels - make a top and bottom row, with divs and can then centre the text directly under the buttons. When make a slider for the on/off button, can put 'on' and 'off' on either end of the button, inline.
+*/
+
+/* TODO: think there is a tool that will determine which CSS is unused? */
+
+.center {
+    width: 300px;
+    margin:0 auto;
+}
+
 
 body {
     margin: 0;
-}
-
-header {
-    background: #999;
-    color: white;
-    padding: 15px 15px 0 15px;
-}
-
-header h1 {
-    margin: 0;
-    display: inline;
-}
-
-nav ul {
-    margin: 0;
-    padding: 0 0 0 15px;
-    display: inline;
-}
-
-nav ul li {
-    background: black;
-    color: white;
-    display: inline-block;
-    list-style-type: none;
-    padding: 5px 15px;
-}
-
-nav ul li a {
-    color: white;
+    background-image: url(http://cdn.backgroundhost.com/backgrounds/subtlepatterns/tileable_wood_texture.png);
 }
 
 .row {
-    display: inline;
-    clear: both;
+
+    /*display: inline;
+    clear: both;*/
 }
 
 .row:after {
