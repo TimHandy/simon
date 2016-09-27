@@ -9,6 +9,7 @@ div h1 {
 .wrapper {
     width: 50%;
     margin: 0 auto;
+
 }
 
 .toy {
@@ -17,15 +18,16 @@ div h1 {
 
 .simon-body {
     background-color: gray;
-    width: 310px; height: 310px;
+    width: 320px; height: 320px;
     border-radius: 50%;
+    margin-top: 50px;
     /*position: relative;*/
 }
 
 .components {
     position: relative;
-    top: 5px;
-    left: 5px;
+    top: 10px;
+    left: 10px;
 }
 
 .quad {
@@ -67,7 +69,8 @@ div h1 {
 }
 
 /* TODO: can i sort these quadrants so that they match the outer curve? */
-/* TODO: add another dark grey circle beind the center-console to  */
+/* TODO: buttons should have shadows to give 3D look */
+/* TODO: hover over quadrants should depress */
 
 .center-console-spacer-ring {
     height: 170px; width: 170px;
@@ -97,12 +100,13 @@ div h1 {
     position: absolute;
     top: 135px;
     left: 90px;
-    height: 30px; width: 40px;
-    padding-left: 10px;
+    height: 25px; width: 35px;
+    padding-left: 5px;
+    padding-top: 5px;
     background-color: black;
     border-radius: 5px;
     font-family: monospace;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
     color: #DC0007;
 
@@ -140,7 +144,7 @@ div h1 {
 
 .on-off-button {
     height: 20px; width: 30px;
-    background-color: red;
+    background-color: #ff0000;
     border: 2px solid black;
     position: absolute;
     top: 180px;

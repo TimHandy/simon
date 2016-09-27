@@ -19,45 +19,63 @@
 
 let isOn = false;
 let isStrict = false;
-let sequenceArr = []
+let isPlaying = false;
+let sequenceArr = [];
+let buttonPressesArr = [];
 
-function powerOnOff() {
+
+function resetGameState() {
+	sequenceArr = [];
+	buttonPressesArr = [];
+}
+
+function congratulate() {
+	// flash lights or something in sequence
+	$(".count-display p").html("WIN");
+	$(".quad").fadeOut(200).fadeIn(100).fadeOut(200).fadeIn(100).fadeOut(200).fadeIn(100);
+}
+
+function powerToggle() {
 	if (!isOn) {
 		isOn = true;
+		$(".on-off-button").css("background-color", "#ff8000");
 		$(".count-display p").html("--").hide();
 		$(".count-display p").fadeIn(300);
-		resetArrays();
+		resetGameState();
 		console.log('isOn = ' + isOn + ': Powered On');
+		// TODO: try making opacity when off: $(this).css({opacity: '0.6'}) so buttons look more like they're lighting up when pressed.
 	} else {
 		isOn = false;
+		$(".on-off-button").css("background-color", "#ff0000");
 		$(".count-display p").fadeOut(1000);
 		console.log('isOn = ' + isOn + ': Powered Off');
 	}
 	// TODO: make this button into a slider switch
 }
 
-function startReset() {
-	if (isOn) {
-		$(".count-display p").html("--").hide();
-		$(".count-display p").fadeIn(200).fadeOut(200).fadeIn(200);
-		resetArrays();
-		nextPlay();
-	}
-}
-
-function strictOnOff() {
+function strictToggle() {
 	if (isOn && !isStrict) {
 		isStrict = true;
 		$(".strict-button-indicator").css("background-color", "#DC0007");
+		console.log('isStrict = ' + isStrict + ': Strict mode is now on');
 	} else {
 		isStrict = false;
 		$(".strict-button-indicator").css("background-color", "black");
+		console.log('isStrict = ' + isStrict + ': Strict mode is now off');
 		// note, to enable fade in/out of colours, you have to use a 3rd party plugin: https://github.com/jquery/jquery-color/
 	}
 }
 
-function flashButton(item) {
-	setTimeout(function(){ $("#"+item).fadeOut().fadeIn(); }, 1000);
+function startReset() {
+	console.log('startReset pressed, if powered on, it will reset and start the game');
+	if (isOn) {
+		console.log('isOn = ' + isOn + ': system reset');
+		isPlaying = true;
+		$(".count-display p").html("--").hide();
+		$(".count-display p").fadeIn(200).fadeOut(200).fadeIn(200);
+		resetGameState();
+		nextPlay();
+	}
 }
 
 function nextPlay() {
@@ -65,58 +83,57 @@ function nextPlay() {
 	var randomButton = Math.floor(Math.random() * 4) + 1;
 	sequenceArr.push(randomButton);
 	// for each num in array, flash and play sound for that quadrant
-	sequenceArr.forEach(flashButton);
+	sequenceArr.forEach(flashButtonSequence);  // FIXME - need some kind of callback here?
 }
 
-function congratulate() {
-	// flash lights or something
+function flashButtonSequence(item) {
+	setTimeout(function(){ $("#"+item).fadeOut(300).fadeIn(200); }, 1000);
 }
 
-function resetArrays() {
-	sequenceArr = [];
-	buttonPressesArr = [];
+function checkButtonPressesMatch() {
+	// 	each entry in buttonPressesArr is matched to corresponding entry in sequence...
+	// 		if a mismatch is found
+	//			Fail noise, and !! in display
+	// 			if presses === sequence, nextPlay
+	// 			else if (!strict)
+	// 				repeat current sequence
+	// 			else if (strict)
+	// 				startResetGame()
+	// 		else if buttonPressesArr.length === 20
+	// 			congratulate()
+	// 			startReset()
+	// 		else {
+	//			reset the buttonPressesArr (it has to be checked fresh each time)
+				//buttonPressesArr = [];
+	//			var level = buttonPressesArr.length
+	//			update display
+	//
+	// 		}
+	console.log('array comparison here');
 }
 
 $(".on-off-button").click(function(){
-    powerOnOff();
+	powerToggle();
 });
 
 $(".strict-button").click(function(){
-    strictOnOff();
+	strictToggle();
 });
 
 $(".start-reset-button").click(function(){
-    startReset();
+	startReset();
 });
 
+// quadrant click handler
+$(".quad").click(function(){
+	if (isOn && isPlaying) {
+		//$(this).fadeOut(200).fadeIn(100);
+		// 	TODO: depresses, lights up, makes noise
+		buttonPressesArr.push(parseInt(this.id));
+		if (buttonPressesArr.length === sequenceArr.length) {
+			checkButtonPressesMatch();
+		}
+		console.log(buttonPressesArr);
 
-// clickListener:
-// 	click on quad:
-// 		depresses
-// 		lights up
-// 		makes noise
-
-
-
-
-
-// $ on page load
-	// gameplay logic
-		// if isOn
-		//
-		// nextPlay() {
-		//
-		// player clicks a button/s and each is recorded to a buttonPressesArr
-		// 	each entry in buttonPressesArr is matched to corresponding entry in sequence...
-		// 		if a mismatch is found
-		// 			if presses === sequence, nextPlay
-		// 			else if (!strict)
-		// 				repeat sequence
-		// 			else if (strict)
-		// 				startResetGame()
-		// 		else if buttonPressesArr.length === 20
-		// 			congratulate()
-		// 			startReset()
-		// 		else {
-		// 			nextPlay()
-		// 		}
+	}
+});
