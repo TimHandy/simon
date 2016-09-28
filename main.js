@@ -9,11 +9,9 @@
 // User Story: I can play in strict mode where if I get a button press wrong, it notifies me that I have done so, and the game restarts at a new random series of button presses.
 // User Story: I can win the game by getting a series of 20 steps correct. I am notified of my victory, then the game starts over.
 
-
 // Feature: Timeout if not pressed a button in x secs then it resets to the start
 
 //Hint: Here are mp3s you can use for each button: https://s3.amazonaws.com/freecodecamp/simonSound1.mp3, https://s3.amazonaws.com/freecodecamp/simonSound2.mp3, https://s3.amazonaws.com/freecodecamp/simonSound3.mp3, https://s3.amazonaws.com/freecodecamp/simonSound4.mp3.
-
 
 //'use strict';  // Recommended as best practice, but disabled as issues with jshint stating "$ is not defined"
 
@@ -23,6 +21,17 @@ let isPlaying = false;
 let sequenceArr = [];
 let buttonPressesArr = [];
 
+$(".on-off-button").click(function(){
+	powerToggle();
+});
+
+$(".strict-button").click(function(){
+	strictToggle();
+});
+
+$(".start-reset-button").click(function(){
+	startReset();
+});
 
 function resetGameState() {
 	sequenceArr = [];
@@ -31,7 +40,7 @@ function resetGameState() {
 
 function congratulate() {
 	// flash lights or something in sequence
-	$(".count-display p").html("WIN");
+	$(".count-display p").html("WIN");  // TODO: make this '20' 'YOU' 'WON' '20' 'YOU' 'WON'...
 	$(".quad").fadeOut(200).fadeIn(100).fadeOut(200).fadeIn(100).fadeOut(200).fadeIn(100);
 }
 
@@ -45,6 +54,7 @@ function powerToggle() {
 		console.log('isOn = ' + isOn + ': Powered On');
 		// TODO: try making opacity when off: $(this).css({opacity: '0.6'}) so buttons look more like they're lighting up when pressed.
 	} else {
+		resetGameState();
 		isOn = false;
 		$(".on-off-button").css("background-color", "#ff0000");
 		$(".count-display p").fadeOut(1000);
@@ -66,74 +76,94 @@ function strictToggle() {
 	}
 }
 
+function flashButton(buttonId) {
+	$("#"+buttonId).fadeOut(300).fadeIn(200);
+}
+
+// flash and play sound for that quadrant
+function flashButtonSequence(sequenceArr) {
+	// iterate through the sequenceArr.shift? then with a timeout? to flash the lights? forEach is asynchronous I think, so won't work.
+	let clonedSequenceArr = sequenceArr.slice(0);  // .slice(0) is a way to clone an array... only does a shallow clone
+	function loop() {
+	    setTimeout(function() {
+			let button = clonedSequenceArr.shift();
+			flashButton(button);
+	        //console.log(button)
+	        if (clonedSequenceArr.length > 0) {
+	            loop();
+	        }
+	    }, 1000);
+	}
+	loop();
+}
+
 function startReset() {
-	console.log('startReset pressed, if powered on, it will reset and start the game');
 	if (isOn) {
 		console.log('isOn = ' + isOn + ': system reset');
 		isPlaying = true;
-		$(".count-display p").html("--").hide();
-		$(".count-display p").fadeIn(200).fadeOut(200).fadeIn(200);
+		$(".count-display p").html("--").hide().fadeIn(200).fadeOut(200).fadeIn(200);
 		resetGameState();
 		nextPlay();
 	}
 }
 
 function nextPlay() {
-	// Choose random number 1-4, and add to sequenceArr
+	// Choose random quadrant, and append to the sequence
 	var randomButton = Math.floor(Math.random() * 4) + 1;
 	sequenceArr.push(randomButton);
-	// for each num in array, flash and play sound for that quadrant
-	sequenceArr.forEach(flashButtonSequence);  // FIXME - need some kind of callback here?
+	console.log('Sequence is: ' + sequenceArr);
+	flashButtonSequence(sequenceArr);
 }
 
-function flashButtonSequence(item) {
-	setTimeout(function(){ $("#"+item).fadeOut(300).fadeIn(200); }, 1000);
+function compareIndexVals(buttonPressesArr, sequenceArr) {
+	// TODO: Don't think this is very efficient as it checks every element, every time. Also, get rid of the for loop. Is there an inbuilt method to compare two arrays?
+    for (var i = 0; i < buttonPressesArr.length; i++) {	// FIXME: dirty code smell? use .reduce instead?
+        if ( buttonPressesArr[i] !== sequenceArr[i] ) {
+            return false;
+        }
+    }
+    return true;
 }
-
-function checkButtonPressesMatch() {
-	// 	each entry in buttonPressesArr is matched to corresponding entry in sequence...
-	// 		if a mismatch is found
-	//			Fail noise, and !! in display
-	// 			if presses === sequence, nextPlay
-	// 			else if (!strict)
-	// 				repeat current sequence
-	// 			else if (strict)
-	// 				startResetGame()
-	// 		else if buttonPressesArr.length === 20
-	// 			congratulate()
-	// 			startReset()
-	// 		else {
-	//			reset the buttonPressesArr (it has to be checked fresh each time)
-				//buttonPressesArr = [];
-	//			var level = buttonPressesArr.length
-	//			update display
-	//
-	// 		}
-	console.log('array comparison here');
-}
-
-$(".on-off-button").click(function(){
-	powerToggle();
-});
-
-$(".strict-button").click(function(){
-	strictToggle();
-});
-
-$(".start-reset-button").click(function(){
-	startReset();
-});
 
 // quadrant click handler
 $(".quad").click(function(){
-	if (isOn && isPlaying) {
-		//$(this).fadeOut(200).fadeIn(100);
-		// 	TODO: depresses, lights up, makes noise
-		buttonPressesArr.push(parseInt(this.id));
-		if (buttonPressesArr.length === sequenceArr.length) {
-			checkButtonPressesMatch();
-		}
-		console.log(buttonPressesArr);
+	// 	TODO: depresses, lights up, makes noise
+	$(this).fadeOut(200).fadeIn(200);
 
+	buttonPressesArr.push( parseInt(this.id) );
+	console.log('buttonPressesArr: ' + buttonPressesArr);
+
+	//if player got the sequence correct
+	if ( compareIndexVals(buttonPressesArr, sequenceArr) ) {
+		//if final level reached
+		if (buttonPressesArr.length === sequenceArr.length && sequenceArr.length === 10) {
+			congratulate();
+			//else if just the sequence was correct for that level
+		} else if ( buttonPressesArr.length === sequenceArr.length ) {
+			$(".count-display p").html(sequenceArr.length);
+			buttonPressesArr = [];
+			nextPlay();
+		}
+		//if sequence was not correct
+	} else {
+		console.log('fail');
+		$(".count-display p").html("!!!").fadeOut(400).fadeIn(20).fadeOut(400).fadeOut(400).fadeIn(20);
+		$(".count-display p").html(sequenceArr.length);
+		// if strict mode on
+		if (isStrict) {
+			$(".count-display p").html("!!!").fadeOut(400).fadeIn(20).fadeOut(400).fadeOut(400).fadeIn(20, function() {
+				startReset();
+			});
+			//if strict mode off
+		} else if (!isStrict) {
+			$(".count-display p").html("!!!").fadeOut(400).fadeIn(20).fadeOut(400).fadeOut(400).fadeIn(20, function() {
+				buttonPressesArr = [];
+				$(".count-display p").html(sequenceArr.length -1).fadeIn(function() {
+					flashButtonSequence(sequenceArr);
+				});
+			});
+			console.log('Sequence is: ' + sequenceArr);
+			console.log('buttonPressesArr: ' + buttonPressesArr);
+		}
 	}
 });
