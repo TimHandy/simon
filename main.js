@@ -9,14 +9,13 @@
 // User Story: I can play in strict mode where if I get a button press wrong, it notifies me that I have done so, and the game restarts at a new random series of button presses.
 // User Story: I can win the game by getting a series of 20 steps correct. I am notified of my victory, then the game starts over.
 
-// TODO: Timeout if not pressed a button in x secs then it resets to the start
+// IDEA: Timeout if not pressed a button in x secs then it resets to the start
 
 'use strict';  // Recommended as best practice.
 
 const MAX_LEVEL = 20;
 let isOn = false;
 let isStrict = false;
-let isPlaying = false;
 let sequenceArr = [];
 let buttonPressesArr = [];
 
@@ -100,8 +99,8 @@ function flashButtonSequence(sequenceArr) {
 
 function startReset() {
 	if (isOn) {
+		// FIXME: this should cancel any sequences/sounds playing. Currently the flashButtonSequence will continue until finished. How do I cut it short?
 		console.log('isOn = ' + isOn + ': system reset');
-		isPlaying = true;
 		$(".count-display p").html("1").hide().fadeIn(200).fadeOut(200).fadeIn(200);
 		resetGameState();
 		nextPlay();
@@ -129,7 +128,9 @@ function compareIndexVals(buttonPressesArr, sequenceArr) {
 
 // quadrant click handler
 $(".quad").click(function(){
-	// 	TODO: depresses, lights up, makes noise
+	// FIXME: Ohh-errr...there's some weirdness going on if you click too much... :-/ Perhaps a flag of some kind to prevent you clicking whilst a flashButtonSequence is playing?
+	// FIXME: Should all this spaghetti code be in a click handler? Is this bad form?
+	// TODO: 3D depresses on buttons
 	$(this).fadeOut(200).fadeIn(200);
 	document.getElementById('simonSound' + this.id).play();
 
@@ -143,13 +144,12 @@ $(".quad").click(function(){
 			congratulate();
 			//else if just the sequence was correct for that level
 		} else if ( buttonPressesArr.length === sequenceArr.length ) {
-
 			buttonPressesArr = [];
 			nextPlay();
 		}
 	//if sequence was not correct
 	} else {
-		// TODO: play the grrrrrr sound here!
+		// TODO: play the error grrrrrr sound here!
 		// TODO: break these fails out into functions, strictFail, nonStrictFail?
 		// TODO: look at these multiple fadeIn/FadeOut bleuchhh... DRY it up.
 		console.log('fail');
