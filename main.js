@@ -9,12 +9,11 @@
 // User Story: I can play in strict mode where if I get a button press wrong, it notifies me that I have done so, and the game restarts at a new random series of button presses.
 // User Story: I can win the game by getting a series of 20 steps correct. I am notified of my victory, then the game starts over.
 
-// Feature: Timeout if not pressed a button in x secs then it resets to the start
+// TODO: Timeout if not pressed a button in x secs then it resets to the start
 
-//Hint: Here are mp3s you can use for each button: https://s3.amazonaws.com/freecodecamp/simonSound1.mp3, https://s3.amazonaws.com/freecodecamp/simonSound2.mp3, https://s3.amazonaws.com/freecodecamp/simonSound3.mp3, https://s3.amazonaws.com/freecodecamp/simonSound4.mp3.
+'use strict';  // Recommended as best practice.
 
-//'use strict';  // Recommended as best practice, but disabled as issues with jshint stating "$ is not defined"
-
+const MAX_LEVEL = 20;
 let isOn = false;
 let isStrict = false;
 let isPlaying = false;
@@ -61,6 +60,7 @@ function powerToggle() {
 		console.log('isOn = ' + isOn + ': Powered Off');
 	}
 	// TODO: make this button into a slider switch
+	// TODO: when the power button is switched off, any sequences currently playing should but cut short and stop
 }
 
 function strictToggle() {
@@ -78,6 +78,7 @@ function strictToggle() {
 
 function flashButton(buttonId) {
 	$("#"+buttonId).fadeOut(300).fadeIn(200);
+	document.getElementById('simonSound'+buttonId).play();
 }
 
 // flash and play sound for that quadrant
@@ -101,7 +102,7 @@ function startReset() {
 	if (isOn) {
 		console.log('isOn = ' + isOn + ': system reset');
 		isPlaying = true;
-		$(".count-display p").html("--").hide().fadeIn(200).fadeOut(200).fadeIn(200);
+		$(".count-display p").html("1").hide().fadeIn(200).fadeOut(200).fadeIn(200);
 		resetGameState();
 		nextPlay();
 	}
@@ -109,15 +110,16 @@ function startReset() {
 
 function nextPlay() {
 	// Choose random quadrant, and append to the sequence
-	var randomButton = Math.floor(Math.random() * 4) + 1;
+	let randomButton = Math.floor(Math.random() * 4) + 1;
 	sequenceArr.push(randomButton);
 	console.log('Sequence is: ' + sequenceArr);
 	flashButtonSequence(sequenceArr);
+	$(".count-display p").html(sequenceArr.length);
 }
 
 function compareIndexVals(buttonPressesArr, sequenceArr) {
 	// TODO: Don't think this is very efficient as it checks every element, every time. Also, get rid of the for loop. Is there an inbuilt method to compare two arrays?
-    for (var i = 0; i < buttonPressesArr.length; i++) {	// FIXME: dirty code smell? use .reduce instead?
+    for (let i = 0; i < buttonPressesArr.length; i++) {	// FIXME: dirty code smell? use .reduce instead?
         if ( buttonPressesArr[i] !== sequenceArr[i] ) {
             return false;
         }
@@ -129,6 +131,7 @@ function compareIndexVals(buttonPressesArr, sequenceArr) {
 $(".quad").click(function(){
 	// 	TODO: depresses, lights up, makes noise
 	$(this).fadeOut(200).fadeIn(200);
+	document.getElementById('simonSound' + this.id).play();
 
 	buttonPressesArr.push( parseInt(this.id) );
 	console.log('buttonPressesArr: ' + buttonPressesArr);
@@ -136,16 +139,19 @@ $(".quad").click(function(){
 	//if player got the sequence correct
 	if ( compareIndexVals(buttonPressesArr, sequenceArr) ) {
 		//if final level reached
-		if (buttonPressesArr.length === sequenceArr.length && sequenceArr.length === 10) {
+		if (buttonPressesArr.length === sequenceArr.length && sequenceArr.length === MAX_LEVEL) {
 			congratulate();
 			//else if just the sequence was correct for that level
 		} else if ( buttonPressesArr.length === sequenceArr.length ) {
-			$(".count-display p").html(sequenceArr.length);
+
 			buttonPressesArr = [];
 			nextPlay();
 		}
-		//if sequence was not correct
+	//if sequence was not correct
 	} else {
+		// TODO: play the grrrrrr sound here!
+		// TODO: break these fails out into functions, strictFail, nonStrictFail?
+		// TODO: look at these multiple fadeIn/FadeOut bleuchhh... DRY it up.
 		console.log('fail');
 		$(".count-display p").html("!!!").fadeOut(400).fadeIn(20).fadeOut(400).fadeOut(400).fadeIn(20);
 		$(".count-display p").html(sequenceArr.length);
@@ -158,7 +164,7 @@ $(".quad").click(function(){
 		} else if (!isStrict) {
 			$(".count-display p").html("!!!").fadeOut(400).fadeIn(20).fadeOut(400).fadeOut(400).fadeIn(20, function() {
 				buttonPressesArr = [];
-				$(".count-display p").html(sequenceArr.length -1).fadeIn(function() {
+				$(".count-display p").html(sequenceArr.length).fadeIn(function() {
 					flashButtonSequence(sequenceArr);
 				});
 			});
