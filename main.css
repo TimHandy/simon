@@ -7,12 +7,8 @@ div h1 {
 }
 
 .wrapper {
-    width: 50%;
+    max-width: 50%;
     margin: 0 auto;
-
-}
-
-.toy {
 
 }
 
@@ -24,6 +20,7 @@ div h1 {
     /*position: relative;*/
 }
 
+/*retro-fitted this class to contain the other components as they had been positioned already! */
 .components {
     position: relative;
     top: 10px;
@@ -68,9 +65,9 @@ div h1 {
     left: 160px;
 }
 
-/* TODO: can i sort these quadrants so that they match the outer curve? */
+/* TODO: can i make these quadrant curves match the outer curve? */
 /* TODO: buttons should have shadows to give 3D look */
-/* TODO: hover over quadrants should depress */
+/* TODO: hover over quadrants should depress slightly to indicate they can be pressed */
 
 .center-console-spacer-ring {
     height: 170px; width: 170px;
@@ -142,6 +139,13 @@ div h1 {
     left: 195px;
 }
 
+.strict-button p {
+    font-size: 8px;
+    position: relative;
+    bottom: -20px;
+    left: -6px;
+}
+
 .on-off-button {
     height: 20px; width: 30px;
     background-color: #ff0000;
@@ -151,25 +155,18 @@ div h1 {
     left: 135px;
 }
 
-.start-reset-button p {
-    font-size: 8px;
-    position: relative;
-    bottom: -20px;
-    left: -6px;
-}
-
-.strict-button p {
-    font-size: 8px;
-    position: relative;
-    bottom: -20px;
-    left: -6px;
-}
-
 .on-off-button p {
     font-size: 8px;
     position: relative;
     bottom: -20px;
     left: -2px;
+}
+
+.start-reset-button p {
+    font-size: 8px;
+    position: relative;
+    bottom: -20px;
+    left: -6px;
 }
 
 /* TODO:  sort this css positioning of buttons and labels - make a top and bottom row, with divs and can then centre the text directly under the buttons. When make a slider for the on/off button, can put 'on' and 'off' on either end of the button, inline.

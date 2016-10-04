@@ -43,6 +43,7 @@ function congratulate() {
 }
 
 function powerToggle() {
+	// FIXME: There is craziness if turning off you can then still press buttons and the clickhandler still fires. Maybe add an if isOn to the click handler?
 	if (!isOn) {
 		isOn = true;
 		$(".on-off-button").css("background-color", "#ff8000");
